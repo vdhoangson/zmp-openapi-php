@@ -11,7 +11,7 @@
 ## 2. Cài đặt
 
 ```bash
-composer require vendor/zmp-openapi-php
+composer require vdhoangson/zmp-openapi-php
 ```
 
 ## 3. Sử dụng nhanh
