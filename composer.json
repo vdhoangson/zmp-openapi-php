@@ -1,0 +1,21 @@
+{
+    "name": "vdhoangson/zmp-openapi-php",
+    "description": "Zalo MiniApp OpenAPI PHP SDK",
+    "authors": [
+        {
+            "name": "vdhoangson",
+            "email": "vdhoangson@gmail.com"
+        }
+    ],
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Vdhoangson\\ZmpOpenApi\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.1",
+        "guzzlehttp/guzzle": "^7.0"
+    }
+}
