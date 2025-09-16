@@ -8,20 +8,33 @@ use Vdhoangson\ZmpOpenApi\Constants\ZmpConstant;
 
 class BaseClient
 {
-    public $apiKey;
+    public string $apiKey;
     public $isUseProxy = false;
     public $proxy;
     public $domain = ZmpConstant::DOMAIN_PROD;
-    public $sdkVersion = '2.1.1';
+    public $sdkVersion = '1.0.0';
     public $sdkName = 'PHP';
     public $headers;
     public $apiKeyHeaderName;
     public $identityHeaderName;
     public $identity;
-    public $version;
-    private $httpClient;
+    public string $version;
 
-    public function __construct($version, $apiKeyHeaderName, $apiKey, $identityHeaderName, $identity, $proxy = null)
+    private Client $httpClient;
+
+    /**
+     * Constructor for BaseClient.
+     *
+     * Initializes the client with API credentials and optional proxy settings.
+     *
+     * @param string $version API version
+     * @param string $apiKeyHeaderName Header name for API key
+     * @param string $apiKey API key
+     * @param string $identityHeaderName Header name for identity
+     * @param string $identity Identity value
+     * @param mixed $proxy Proxy configuration (optional)
+     */
+    public function __construct(string $version, string $apiKeyHeaderName, string $apiKey, string $identityHeaderName, string $identity, $proxy = null)
     {
         $this->version = $version;
         $this->apiKeyHeaderName = $apiKeyHeaderName;
@@ -43,6 +56,13 @@ class BaseClient
         ]);
     }
 
+    /**
+     * Validates the initialization parameters.
+     *
+     * Checks if required fields are set and proxy is valid if used.
+     *
+     * @throws \Exception If validation fails
+     */
     public function validateInit()
     {
         if (
@@ -58,6 +78,11 @@ class BaseClient
         }
     }
 
+    /**
+     * Sets the proxy configuration for HTTP requests.
+     *
+     * @param mixed $proxy Proxy settings
+     */
     public function setProxy($proxy)
     {
         $this->proxy = $proxy;
@@ -67,6 +92,11 @@ class BaseClient
         ]);
     }
 
+    /**
+     * Cancels the proxy configuration.
+     *
+     * Resets proxy settings and recreates HTTP client without proxy.
+     */
     public function cancelProxy()
     {
         $this->proxy = null;
@@ -74,7 +104,15 @@ class BaseClient
         $this->httpClient = new Client();
     }
 
-    public function doGet($endpoint, $params = [], $options = [])
+    /**
+     * Performs a GET request to the API.
+     *
+     * @param string $endpoint API endpoint
+     * @param array $params Query parameters
+     * @param array $options Additional options
+     * @return array Response data
+     */
+    public function doGet($endpoint, array $params = [], $options = [])
     {
         try {
             $this->validateInit();
@@ -105,6 +143,14 @@ class BaseClient
         }
     }
 
+    /**
+     * Performs a POST request to the API.
+     *
+     * @param string $endpoint API endpoint
+     * @param mixed $params Request body parameters
+     * @param array $options Additional options
+     * @return array Response data
+     */
     public function doPost($endpoint, $params = [], $options = [])
     {
         try {
@@ -133,6 +179,14 @@ class BaseClient
         }
     }
 
+    /**
+     * Performs a PUT request to the API.
+     *
+     * @param string $endpoint API endpoint
+     * @param mixed $params Request body parameters
+     * @param array $options Additional options
+     * @return array Response data
+     */
     public function doPut($endpoint, $params = [], $options = [])
     {
         try {
@@ -161,11 +215,23 @@ class BaseClient
         }
     }
 
-    public function getMiniApps($appSlice)
+    /**
+     * Retrieves a list of mini apps.
+     *
+     * @param array $params Query parameters
+     * @return array Response data
+     */
+    public function getMiniApps(array $params = [])
     {
-        return $this->doGet($this->buildRequestURI(), $appSlice);
+        return $this->doGet($this->buildRequestURI(), $params);
     }
 
+    /**
+     * Retrieves versions of a mini app.
+     *
+     * @param mixed $appSlice App slice data
+     * @return array Response data
+     */
     public function getVersionsMiniApp($appSlice)
     {
         return $this->doGet($this->buildRequestURI($appSlice['miniAppId'], ZmpConstant::VERSIONS), $appSlice, [
@@ -178,11 +244,23 @@ class BaseClient
         ]);
     }
 
+    /**
+     * Creates a new mini app.
+     *
+     * @param mixed $appInfo App information
+     * @return array Response data
+     */
     public function createMiniApp($appInfo)
     {
         return $this->doPost($this->buildRequestURI(), $appInfo);
     }
 
+    /**
+     * Deploys a mini app.
+     *
+     * @param mixed $deployApp Deployment data including file
+     * @return array Response data
+     */
     public function deployMiniApp($deployApp)
     {
         $multipart = [
@@ -216,16 +294,34 @@ class BaseClient
         }
     }
 
+    /**
+     * Requests publication of a mini app.
+     *
+     * @param mixed $requestPublishApp Publication request data
+     * @return array Response data
+     */
     public function requestPublishMiniApp($requestPublishApp)
     {
         return $this->doPost($this->buildRequestURI($requestPublishApp['miniAppId'], ZmpConstant::REQUEST_PUBLISH), $requestPublishApp);
     }
 
+    /**
+     * Publishes a mini app.
+     *
+     * @param mixed $publishApp Publication data
+     * @return array Response data
+     */
     public function publishMiniApp($publishApp)
     {
         return $this->doPost($this->buildRequestURI($publishApp['miniAppId'], ZmpConstant::PUBLISH), $publishApp);
     }
 
+    /**
+     * Retrieves statistics for a mini app.
+     *
+     * @param mixed $statsRequest Stats request data
+     * @return array Response data
+     */
     public function getStats($statsRequest)
     {
         $response = $this->doGet($this->buildRequestURI($statsRequest['miniAppId'], ZmpConstant::STATS), $statsRequest);
@@ -239,11 +335,23 @@ class BaseClient
         ];
     }
 
+    /**
+     * Lists payment channels for a mini app.
+     *
+     * @param mixed $request Request data
+     * @return array Response data
+     */
     public function listPaymentChannels($request)
     {
         return $this->doGet($this->buildRequestURI($request['miniAppId'], ZmpConstant::PAYMENT_CHANNELS), []);
     }
 
+    /**
+     * Converts an object to multipart form data.
+     *
+     * @param mixed $obj Object to convert
+     * @return array Multipart data
+     */
     public function convertObjectToFormData($obj)
     {
         $multipart = [];
@@ -270,6 +378,12 @@ class BaseClient
         return $multipart;
     }
 
+    /**
+     * Creates a payment channel for a mini app.
+     *
+     * @param mixed $request Request data
+     * @return array Response data
+     */
     public function createPaymentChannel($request)
     {
         $multipart = $this->convertObjectToFormData($request);
@@ -292,6 +406,12 @@ class BaseClient
         }
     }
 
+    /**
+     * Updates a payment channel for a mini app.
+     *
+     * @param mixed $request Request data
+     * @return array Response data
+     */
     public function updatePaymentChannel($request)
     {
         $multipart = $this->convertObjectToFormData($request);
@@ -314,38 +434,68 @@ class BaseClient
         }
     }
 
+    /**
+     * Retrieves payment settings for a mini app.
+     *
+     * @param mixed $data Request data
+     * @return array Response data
+     */
     public function getPaymentSetting($data)
     {
         return $this->doGet($this->buildRequestURI($data['miniAppId'], ZmpConstant::PAYMENT_SETTING), []);
     }
 
+    /**
+     * Updates payment settings for a mini app.
+     *
+     * @param mixed $data Request data
+     * @return array Response data
+     */
     public function updatePaymentSetting($data)
     {
         return $this->doPut($this->buildRequestURI($data['miniAppId'], ZmpConstant::PAYMENT_SETTING), $data);
     }
 
+    /**
+     * Lists QR code short links for a mini app.
+     *
+     * @param mixed $data Request data
+     * @return array Response data
+     */
     public function listQrCodeShortLinks($data)
     {
         return $this->doGet($this->buildRequestURI($data['miniAppId'], ZmpConstant::QRCODE_SHORT_LINKS), $data);
     }
 
+    /**
+     * Creates a QR code short URL for a mini app.
+     *
+     * @param mixed $data Request data
+     * @return array Response data
+     */
     public function createQrCodeShortUrl($data)
     {
         return $this->doPost($this->buildRequestURI($data['miniAppId'], ZmpConstant::QRCODE_SHORT_LINKS), $data);
     }
 
+    /**
+     * Requests permission for a mini app.
+     *
+     * @param mixed $data Request data
+     * @return array Response data
+     */
     public function requestPermission($data)
     {
         return $this->doPost($this->buildRequestURI($data['miniappId'], ZmpConstant::PERMISSIONS), $data);
     }
 
     /**
-     * Tạo URL cho request
+     * Builds the request URI for API calls.
      *
-     * @param int $appId
-     * @param mixed $path
-     * @param array $pathVariables
-     * @return string
+     * @param int|null $appId Mini app ID (optional)
+     * @param mixed $path Additional path
+     * @param array ...$pathVariables Path variables
+     * @return string Request URI
      */
     public function buildRequestURI(?int $appId = null, $path = null, array ...$pathVariables)
     {
@@ -362,21 +512,44 @@ class BaseClient
         return $rs;
     }
 
+    /**
+     * Lists API domains for a mini app.
+     *
+     * @param mixed $data Request data
+     * @return array Response data
+     */
     public function listApiDomain($data)
     {
         return $this->doGet($this->buildRequestURI($data['miniAppId'], ZmpConstant::API_DOMAINS), $data);
     }
 
+    /**
+     * Creates an API domain for a mini app.
+     *
+     * @param mixed $data Request data
+     * @return array Response data
+     */
     public function createApiDomain($data)
     {
         return $this->doPost($this->buildRequestURI($data['miniAppId'], ZmpConstant::API_DOMAINS), $data);
     }
 
+    /**
+     * Updates an API domain for a mini app.
+     *
+     * @param mixed $data Request data
+     * @return array Response data
+     */
     public function updateApiDomain($data)
     {
         return $this->doPut($this->buildRequestURI($data['miniAppId'], ZmpConstant::API_DOMAINS), $data);
     }
 
+    /**
+     * Lists app categories.
+     *
+     * @return array Response data
+     */
     public function listCategories()
     {
         return $this->doGet($this->buildRequestURI(null, ZmpConstant::APP_CATEGORIES), []);
