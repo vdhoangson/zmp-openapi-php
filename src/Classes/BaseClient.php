@@ -12,7 +12,7 @@ class BaseClient
     public $isUseProxy = false;
     public $proxy;
     public $domain = ZmpConstant::DOMAIN_PROD;
-    public $sdkVersion = '1.0.0';
+    public $sdkVersion = '1.0.1';
     public $sdkName = 'PHP';
     public $headers;
     public $apiKeyHeaderName;
@@ -252,7 +252,62 @@ class BaseClient
      */
     public function createMiniApp($appInfo)
     {
-        return $this->doPost($this->buildRequestURI(), $appInfo);
+        $this->validateAppInfo($appInfo);
+        $formattedAppInfo = $this->formatSubCateIds($appInfo);
+
+        return $this->doPost($this->buildRequestURI(), $formattedAppInfo);
+    }
+
+    /**
+     * Formats subcategory IDs in app information.
+     *
+     * @param array $appInfo App information array
+     * @return array Modified app information with formatted subCateIds
+     */
+    public function formatSubCateIds($appInfo)
+    {
+        if (!isset($appInfo['subCateIds'])) {
+            return $appInfo;
+        }
+
+        $subCateIds = is_array($appInfo['subCateIds'])
+            ? implode(',', $appInfo['subCateIds'])
+            : trim($appInfo['subCateIds']);
+
+        $appInfo['subCateIds'] = !empty($subCateIds) ? $subCateIds : null;
+
+        return $appInfo;
+    }
+
+    /**
+     * Validates app information.
+     *
+     * @param array $appInfo App information array
+     * @throws \Exception If validation fails
+     */
+    public function validateAppInfo(array $appInfo)
+    {
+        if (!isset($appInfo['appName']) || trim($appInfo['appName']) === '') {
+            throw new \Exception('appName is required');
+        }
+
+        if (!isset($appInfo['appDescription']) || trim($appInfo['appDescription']) === '') {
+            throw new \Exception('appDescription is required');
+        }
+
+        if (!isset($appInfo['appCategory']) || trim($appInfo['appCategory']) === '') {
+            throw new \Exception('appCategory is required');
+        }
+
+        if (!isset($appInfo['appLogoUrl']) || trim($appInfo['appLogoUrl']) === '') {
+            throw new \Exception('appLogoUrl is required');
+        }
+
+        if (isset($appInfo['subCateIds'])) {
+            if (!is_array($appInfo['subCateIds']) && !is_string($appInfo['subCateIds'])) {
+                throw new \Exception('subCateIds must be an array of numbers or a comma-separated string');
+            }
+        }
     }
 
     /**

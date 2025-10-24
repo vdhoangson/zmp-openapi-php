@@ -17,4 +17,5 @@ class ZmpConstant
     const PERMISSIONS = '/request-permission';
     const API_DOMAINS = '/api-domains';
     const APP_CATEGORIES = '/categories';
+    const APP_INFO = '/app-info';
 }
