@@ -536,12 +536,13 @@ class BaseClient
     /**
      * Requests permission for a mini app.
      *
-     * @param mixed $data Request data
+     * @param mixed $appId Mini app ID
+     * @param mixed $params Request params
      * @return array Response data
      */
-    public function requestPermission($data)
+    public function requestPermission($appId, $params)
     {
-        return $this->doPost($this->buildRequestURI($data['miniappId'], ZmpConstant::PERMISSIONS), $data);
+        return $this->doPost($this->buildRequestURI($appId, ZmpConstant::PERMISSIONS), $params);
     }
 
     /**
@@ -601,12 +602,34 @@ class BaseClient
     }
 
     /**
-     * Lists app categories.
+     * Validates an app name.
      *
+     * @param mixed $data Request data
      * @return array Response data
      */
-    public function listCategories()
+    public function validateAppName($data)
     {
-        return $this->doGet($this->buildRequestURI(null, ZmpConstant::APP_CATEGORIES), []);
+        return $this->doPost($this->buildRequestURI(null, ZmpConstant::VALIDATE_NAME), $data);
+    }
+
+    public function validateOa($data)
+    {
+        return $this->doPost($this->buildRequestURI(null, ZmpConstant::VALIDATE_OA), $data);
+    }
+
+    public function verifyOa($data)
+    {
+        return $this->doPost($this->buildRequestURI(null, ZmpConstant::VERIFY_OA), $data);
+    }
+
+    /**
+     * Lists app categories.
+     *
+     * @param string $businessType Business type
+     * @return array Response data
+     */
+    public function listCategories(string $businessType)
+    {
+        return $this->doGet($this->buildRequestURI(null, ZmpConstant::APP_CATEGORIES), ['businessType' => $businessType]);
     }
 }

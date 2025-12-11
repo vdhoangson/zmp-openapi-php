@@ -4,20 +4,16 @@ namespace Vdhoangson\ZmpOpenApi\Constants;
 
 class AppCategoryConstant
 {
-    const BUSINESS = 'Kinh doanh';
-    const ECOMMERCE = 'Thương mại điện tử';
+    const REAL_ESTATE = 'Bất động sản';
+    const GOVERNMENT = 'Nhà nước & Chính phủ';
     const EDUCATION = 'Giáo dục';
     const FINANCE = 'Tài chính';
-    const GAME = 'Trò chơi';
-    const GOVERNMENT = 'Nhà nước & Chính phủ';
-    const HEALTH = 'Sức khỏe';
-    const IMAGES = 'Hình ảnh & Video';
-    const NEWS = 'Thông tin & Báo chí';
-    const OFFLINE_SALE = 'Bán hàng Offline';
-    const SOUND = 'Âm thanh & Radio';
-    const TOOLS = 'Công cụ phát triển';
-    const TRAVELING = 'Du lịch';
-    const DEMO = 'Thử nghiệm';
-    const UTILITIES = 'Tiện ích';
+    const FNB = 'F&B';
+    const ENTERTAINMENT = 'Giải trí';
+    const TRANSPORTATION = 'Giao thông vận tải';
+    const LIFE_SERVICE = 'Tiện ích đời sống';
+    const MEDIA = 'Truyền thông';
+    const MEDICAL = 'Y Tế';
+    const ECOMMERCE = 'Thương mại điện tử';
     const OTHERS = 'Khác';
 }

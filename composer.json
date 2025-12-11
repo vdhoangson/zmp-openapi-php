@@ -1,5 +1,6 @@
 {
     "name": "vdhoangson/zmp-openapi-php",
+    "version": "1.0.1",
     "description": "Zalo MiniApp OpenAPI PHP SDK",
     "authors": [
         {
