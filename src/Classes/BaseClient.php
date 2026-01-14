@@ -12,7 +12,7 @@ class BaseClient
     public $isUseProxy = false;
     public $proxy;
     public $domain = ZmpConstant::DOMAIN_PROD;
-    public $sdkVersion = '1.0.1';
+    public $sdkVersion = '1.1';
     public $sdkName = 'PHP';
     public $headers;
     public $apiKeyHeaderName;
